@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <h:form id="f1">
+
+            <h:panelGrid columns="1" style="height: 100%" >
+
+                <p:panel id="panel1" widgetVar="panel1" toggleable="true" header="Ptos. Observación" collapsed="true" >
+
+                    <p:dataTable id="puntos" var="puntos" value="#{puobBean.todosPuobs}" rowKey="#{puntos.puobId}" filteredValue="#{puobBean.filteredPuob}" 
+                                 selection="#{puobBean.selected}" selectionMode="single" paginator="true" rows="7"   widgetVar="puobs" style="height: 320px;" liveResize="true"
+                                 resizableColumns="true" >
+                        <p:ajax global="false" async="true" event="rowSelect"   listener="#{ultimaObsBean.selectListenerPuob()}" update=":f1:contactos :f1:panel2"  />
+                        <p:ajax event="filter"  global="false" />
+                        <p:ajax event="page"  global="false"/>
+                        <p:column headerText="Código" filterBy="#{puntos.puobcodi}" filterMatchMode="startsWith"  >
+                            <h:outputText value="#{puntos.puobcodi}" />
+                        </p:column>
+                        <p:column headerText="Nombre" filterBy="#{puntos.puobnomb}" filterMatchMode="contains">
+                            <h:outputText value="#{puntos.puobnomb}" />
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+                <p:panel id="panel2" widgetVar="panel2" header="Estaciones en: #{puobBean.selected.puobcodi}"  >
+                    <p:dataTable id="contactos" var="estacion" value="#{estaBean.items}" rowKey="#{estacion.estaId}" 
+                                 selection="#{estaBean.selected}" selectionMode="single" widgetVar="estaciones" style="height: 320px;" resizableColumns="true">
+                        <p:ajax global="true" async="true" event="rowSelect" listener="#{ultimaObsBean.selectListenerEsta()}" update=":f2:datalist2" />
+                        <p:ajax event="filter"  global="false" />
+                        <p:ajax event="page"  global="false"/>
+                        <p:column headerText="Captor" filterBy="#{estacion.catiId.captoId.captonomb}" filterMatchMode="startsWith" >
+                            <h:outputText value="#{estacion.catiId.captoId.captonomb}" />
+                        </p:column>
+                        <p:column headerText="Categoría" filterBy="#{estacion.catiId.tipoId.cateId.catenomb}" filterMatchMode="contains">
+                            <h:outputText value="#{estacion.catiId.tipoId.cateId.catenomb}" />
+                        </p:column>
+                        <p:column headerText="Tipo" filterBy="#{estacion.catiId.tipoId.tiponomb}" filterMatchMode="contains">
+                            <h:outputText value="#{estacion.catiId.tipoId.tiponomb}" />
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>   
+            </h:panelGrid>
+        </h:form>
+    </ui:composition>
+</html>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <h:form id="f1">
+
+            <h:panelGrid columns="1" style="height: 100%" >
+
+                <p:panel id="panel1" widgetVar="panel1" toggleable="true" header="Ptos. Observación" collapsed="true" >
+
+                    <p:dataTable id="puntos" var="puntos" value="#{puobBean.todosPuobs}" rowKey="#{puntos.puobId}" filteredValue="#{puobBean.filteredPuob}" 
+                                 selection="#{puobBean.selected}" selectionMode="single" paginator="true" rows="7"   widgetVar="puobs" style="height: 320px;" liveResize="true"
+                                 resizableColumns="true" >
+                        <p:ajax global="false" async="true" event="rowSelect"   listener="#{datosCrudosBean.selectListenerPuob()}" update=":f1:contactos :f1:panel2 :f1:datalist :f2:growl"  />
+                        <p:ajax event="filter"  global="false" />
+                        <p:ajax event="page"  global="false"/>
+                        <p:column headerText="Código" filterBy="#{puntos.puobcodi}" filterMatchMode="startsWith"  >
+                            <h:outputText value="#{puntos.puobcodi}" />
+                        </p:column>
+                        <p:column headerText="Nombre" filterBy="#{puntos.puobnomb}" filterMatchMode="contains">
+                            <h:outputText value="#{puntos.puobnomb}" />
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+                <p:panel id="panel2" widgetVar="panel2" toggleable="true" header="Estaciones en: #{puobBean.selected.puobcodi}" collapsed="true"  >
+                    <p:dataTable id="contactos" var="estacion" value="#{estaBean.items}" rowKey="#{estacion.estaId}" filteredValue="#{estaBean.filteredEstas}" 
+                                 selection="#{estaBean.selected}" selectionMode="single" paginator="true" rows="7" widgetVar="estaciones" style="height: 320px;" liveResize="true"
+                                 resizableColumns="true">
+                        <p:ajax global="false" async="true" event="rowSelect" listener="#{datosCrudosBean.selectListenerEsta()}" update=":f1:datalist :f2:growl"  />
+                        <p:ajax event="filter"  global="false" />
+                        <p:ajax event="page"  global="false"/>
+                        <p:column headerText="Captor" filterBy="#{estacion.catiId.captoId.captonomb}" filterMatchMode="startsWith" >
+                            <h:outputText value="#{estacion.catiId.captoId.captonomb}" />
+                        </p:column>
+                        <p:column headerText="Categoría" filterBy="#{estacion.catiId.tipoId.cateId.catenomb}" filterMatchMode="contains">
+                            <h:outputText value="#{estacion.catiId.tipoId.cateId.catenomb}" />
+                        </p:column>
+                        <p:column headerText="Tipo" filterBy="#{estacion.catiId.tipoId.tiponomb}" filterMatchMode="contains">
+                            <h:outputText value="#{estacion.catiId.tipoId.tiponomb}" />
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+
+                <p:panel  header="Parámetros" toggleable="true" collapsed="true" >
+
+                    <p:dataTable id="datalist" value="#{cprestaBean.items}" var="item"
+                                 selectionMode="single" selection="#{cprestaBean.selected}"
+
+                                 rowKey="#{item.cprestaId}"
+                                 filteredValue="#{cprestaBean.filteredParametros}"
+                                 paginator="true"
+                                 liveResize="true"
+                                 resizableColumns="true"
+
+
+                                 rows="15"
+
+
+                                 widgetVar="tabla"
+                                 style="height: 530px;">
+                        <p:ajax event="page" global="false"/>
+                        <p:ajax event="filter"  global="false"/>
+                        <p:ajax global="false" async="true" event="rowSelect" listener="#{datosCrudosBean.selectListenerCpresta()}" update=":f2:growl"  />
+                        <p:column filterBy="#{item.copaId.parmId.parmdesc}" filterMatchMode="startsWith" >
+                            <f:facet name="header">
+                                <h:outputText value="Parámetro"/>
+                            </f:facet>
+                            <h:outputText value="#{item.copaId.parmId.parmdesc}"/>
+                        </p:column>
+                        <p:column filterBy="#{item.copaId.umepId.umepsimb}" style="width: 30px;" filterMatchMode="startsWith" >
+                            <f:facet name="header">
+                                <h:outputText value="Unidad"/>
+                            </f:facet>
+                            <h:outputText value="#{item.copaId.umepId.umepsimb}"/>
+                        </p:column>
+                        <p:column filterBy="#{item.copaId.estdId.estdsimb}" style="width: 50px;" filterMatchMode="startsWith">
+                            <f:facet name="header">
+                                <h:outputText value="Estadístico"/>
+                            </f:facet>
+                            <h:outputText value="#{item.copaId.estdId.estdsimb}"/>
+                        </p:column>
+                        <p:column filterBy="#{item.copaId.inutId.inteId}" style="width: 50px;" filterMatchMode="startsWith">
+                            <f:facet name="header">
+                                <h:outputText value="Tiemp"/>
+                            </f:facet>
+                            <h:outputText value="#{item.copaId.inutId.inteId.intetiemp} - #{item.copaId.inutId.umetId.umetId} "/>
+                        </p:column>
+                    </p:dataTable>
+
+                </p:panel>
+                <p:panel header="Período">
+                    <h:panelGrid columns="2">
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="Desde: "></h:outputLabel>
+                            <h:outputLabel value="Hasta: "></h:outputLabel>
+                            <p:calendar id="popup1" value="#{datosCrudosBean.fechaConsultaDesde}" navigator="true" showButtonPanel="true" readonlyInput="true"   >
+                                <p:ajax global="false" async="true" event="dateSelect" listener="#{datosCrudosBean.onDateSelectDesde}" update=":f2:growl"  />
+                            </p:calendar>
+
+                            <p:calendar id="popup2" value="#{datosCrudosBean.fechaConsultaHasta}" navigator="true" showButtonPanel="true" readonlyInput="true"   >
+                                <p:ajax global="false"  async="true" event="dateSelect" listener="#{datosCrudosBean.onDateSelectHasta}" update=":f2:growl" />
+                            </p:calendar>
+                        </h:panelGrid>
+                        <h:panelGroup>
+                            <h:outputLabel value=""></h:outputLabel>
+                            <p:commandButton id="consultar" widgetVar="consultar"  value="Consultar"  label="Consultar"  actionListener="#{datosCrudosBean.actionListener()}" async="false"  update=":f2:panel2 :f2:growl"  />
+                            <p:ajaxStatus onstart="PF('consultar').disable()" onsuccess="PF('consultar').enable()"/>
+                        </h:panelGroup>
+                    </h:panelGrid>
+                </p:panel>
+            </h:panelGrid>
+        </h:form>
+    </ui:composition>
+</html>

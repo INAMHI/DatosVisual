@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <script src="http://code.highcharts.com/highcharts.js"></script>
+        <script src="http://code.highcharts.com/modules/exporting.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/dygraph/1.1.0/dygraph-combined.js"></script>
+        <h:outputStylesheet library="css" name="default.css"  />
+        <h:form id="f2">
+
+            <p:growl id="growl" showDetail="true" sticky="true" escape="false" />  
+            <h:panelGrid columns="1" >
+                <p:ajaxStatus id="status" style="display:block;margin-bottom:2em;height:24px;"  >
+                    <f:facet name="default" >
+                        <p:graphicImage  name="images/consultas_datos.png" styleClass="centeredImage" />
+                    </f:facet>
+                    <f:facet name="start">
+                        <p:panel styleClass="centeredPanel">
+                            <h:panelGrid columns="2" cellspacing="10" >
+                                <p:graphicImage  name="images/lb.gif" />
+                                <h:outputText  value="ESTAMOS PROCESANDO SU CONSULTA. POR FAVOR ESPERE"  ></h:outputText>    
+                            </h:panelGrid>
+                        </p:panel>
+                    </f:facet>
+                    <f:facet name="complete"  >
+                        <p:panel  id="panel2" header="DATOS PROCESADOS: #{datosProcesadosBean.estacionCodigo} #{datosProcesadosBean.estacionNombre} - #{datosProcesadosBean.nombreParametro} " style="width: 100%" >
+                            <p:panel id="grafico" header="GRÁFICO" toggleable="true" collapsed="false" style="width: 100%"  >
+                                <p:commandButton value="Graficar" onsuccess="init()"  global="false" />
+                                <script >           
+                                    function init(){  
+                                    
+                                        g = new Dygraph(document.getElementById("container"),"${datosProcesadosBean.datosGrafico}");
+                                    }
+                                </script>
+                                <div id="container" style="width: 100%" ></div>
+                            </p:panel>
+                            <p:panel header="TABLA DE DATOS" toggleable="true" collapsed="false " style="width: 100%" >
+                                <p:dataTable  id="datalist2"  value="#{data1hBean.datos}" var="item"
+                                              paginator="true"
+                                              rows="20"
+                                              rowsPerPageTemplate="20,40,60"
+                                              rowKey="#{item.data1hId}"
+                                              selectionMode="multiple"
+                                              selection="#{data1hBean.selectedData}"
+                                              filteredValue="#{data1hBean.filteredData}"
+                                              currentPageReportTemplate="Mostrando {startRecord}-{endRecord} de {totalRecords}"
+                                              paginatorTemplate="{CurrentPageReport}  
+                                              {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+                                              >
+                                    <p:ajax event="page" global="false"/>
+                                    <p:ajax event="filter" global="false"/>
+                                    <p:column style="width:50px;" sortBy="#{item.trcoId.trcoId}">
+                                        <f:facet name="header">
+                                            <h:outputText value="Medio Trans." />
+                                        </f:facet>
+                                        <h:outputText value="#{item.trcoId.trcoId}"/>
+                                    </p:column>
+                                    <p:column style="width:80px;" sortBy="#{item.data1hfetd}" filterBy="#{item.data1hfetd}" filterMatchMode="contains" >
+                                        <f:facet name="header">
+                                            <h:outputText value="Fecha(Local)" />
+                                        </f:facet>
+                                        <h:outputText value="#{item.data1hfetd}"/>
+                                    </p:column>
+                                    <p:column style="width:50px;" sortBy="#{item.data1hvalo}">
+                                        <f:facet name="header">
+                                            <h:outputText value="Valor"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.data1hvalo}"/>
+                                    </p:column>
+                                    <p:column style="width:50px;">
+                                        <f:facet name="header">
+                                            <h:outputText value="Incertidumbre"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.data1hince}"/>
+                                    </p:column>
+                                    <p:column style="width:50px;">
+                                        <f:facet name="header">
+                                            <h:outputText value="N° Lecturas"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.data1hnval}"/>
+                                    </p:column>
+                                    <p:column style="width:200px;" >
+                                        <f:facet name="header">
+                                            <h:outputText value="Datalogger - Marca - Modelo - Serie"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.cfgesId.dtlgId.inhmId.inhmnomb} - #{item.cfgesId.dtlgId.inhmId.marcId.marcnomb} - #{item.cfgesId.dtlgId.inhmId.inhmmode} - #{item.cfgesId.dtlgId.inhmId.inhmseri}"/>
+                                    </p:column>
+                                    <p:column style="width:200px;">
+                                        <f:facet name="header">
+                                            <h:outputText value="Sensor - Marca - Modelo - Serie"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.cfgesId.sensId.inhmId.inhmnomb} - #{item.cfgesId.sensId.inhmId.marcId.marcnomb} - #{item.cfgesId.sensId.inhmId.inhmmode} - #{item.cfgesId.sensId.inhmId.inhmseri}"/>
+                                    </p:column>
+
+                                    <p:column style="width:120px;" >
+                                        <f:facet name="header">
+                                            <h:outputText value="Calidad" />
+                                        </f:facet>
+                                        <h:outputText value="#{item.caliId.calinomb}"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:panel>
+                            <p:panel header="EXPORTE SUS DATOS">
+                                <h:panelGrid columns="1">
+                                    <p:outputLabel value="Excel"/>
+                                    <h:commandLink id="excel">
+                                        <p:graphicImage name="images/excel.png" />
+                                        <p:dataExporter type="csv" encoding="ISO-8859-1"  target="datalist2"   fileName="#{datosProcesadosBean.nombreArchivo}" postProcessor="#{datosProcesadosBean.postProcessXLS(document)}"/>
+                                    </h:commandLink>
+                                </h:panelGrid>
+                            </p:panel>
+
+                        </p:panel>
+                    </f:facet>
+                </p:ajaxStatus>
+            </h:panelGrid>
+        </h:form>
+    </ui:composition>
+</html>

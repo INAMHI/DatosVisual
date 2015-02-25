@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <script src="http://code.highcharts.com/highcharts.js"></script>
+        <script src="http://code.highcharts.com/modules/exporting.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/dygraph/1.1.0/dygraph-combined.js"></script>
+        <h:outputStylesheet library="css" name="default.css"  />
+        <h:form id="f2">
+
+            <h:panelGrid columns="1" >
+                <p:ajaxStatus id="status" style="display:block;margin-bottom:2em;height:24px;"  >
+                    <f:facet name="default" >
+                        <h:graphicImage name="images/consultas_datos.png" styleClass="centeredImage" />
+                    </f:facet>
+                    <f:facet name="start">
+                        <p:panel styleClass="centeredPanel">
+                            <h:panelGrid columns="2" cellspacing="10" >
+                                <h:graphicImage name="images/lb.gif"  />
+                                <h:outputText  value="ESTAMOS PROCESANDO SU CONSULTA. POR FAVOR ESPERE"  ></h:outputText>    
+                            </h:panelGrid>
+                        </p:panel>
+                    </f:facet>
+                    <f:facet name="complete" >
+                        <p:panel id="panel2" header="ÚLTIMA OBSERVACIÓN: #{ultimaObsBean.estacionCodigo} #{ultimaObsBean.estacionNombre}"  style="display:block; width: 100%"  >
+                            <p:panel header="TABLA DE DATOS" toggleable="true" collapsed="false" style="display:block; width: 100%" >
+                                <p:dataTable id="datalist2"  value="#{dataBean.ultimasObservaciones}" var="item" >
+                                    <p:column style="width:50px;" sortBy="#{item.trcoId.trcoId}">
+                                        <f:facet name="header">
+                                            <h:outputText value="Medio Trans." />
+                                        </f:facet>
+                                        <h:outputText value="#{item.trcoId.trcoId}"/>
+                                    </p:column>
+                                    <p:column style="width:80px;"  >
+                                        <f:facet name="header">
+                                            <h:outputText value="Fecha(UTC)" />
+                                        </f:facet>
+                                        <h:outputText value="#{item.datafetd}"/>
+                                    </p:column>
+                                    <p:column style="width:80px;"  >
+                                        <f:facet name="header">
+                                            <h:outputText value="Parámetro" />
+                                        </f:facet>
+                                        <h:outputText value="#{item.copaId.parmId.parmdesc} #{item.copaId.estdId.estddesc} #{item.copaId.umepId.umepsimb}"/>
+                                    </p:column>
+                                    <p:column style="width:50px;" >
+                                        <f:facet name="header">
+                                            <h:outputText value="Valor"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.datavalo}"/>
+                                    </p:column>
+                                    <p:column style="width:50px;">
+                                        <f:facet name="header">
+                                            <h:outputText value="Incertidumbre"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.dataince}"/>
+                                    </p:column>
+                                    <p:column style="width:200px;" >
+                                        <f:facet name="header">
+                                            <h:outputText value="Datalogger - Marca - Modelo - Serie"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.cfgesId.dtlgId.inhmId.inhmnomb} - #{item.cfgesId.dtlgId.inhmId.marcId.marcnomb} - #{item.cfgesId.dtlgId.inhmId.inhmmode} - #{item.cfgesId.dtlgId.inhmId.inhmseri}"/>
+                                    </p:column>
+                                    <p:column style="width:200px;">
+                                        <f:facet name="header">
+                                            <h:outputText value="Sensor - Marca - Modelo - Serie"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.cfgesId.sensId.inhmId.inhmnomb} - #{item.cfgesId.sensId.inhmId.marcId.marcnomb} - #{item.cfgesId.sensId.inhmId.inhmmode} - #{item.cfgesId.sensId.inhmId.inhmseri}"/>
+                                    </p:column>
+                                    <p:column style="width:120px;" >
+                                        <f:facet name="header">
+                                            <h:outputText value="Calidad" />
+                                        </f:facet>
+                                        <h:outputText value="#{item.cali1Id.cali1nomb}"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:panel>
+                        </p:panel>
+                    </f:facet>
+                </p:ajaxStatus>
+            </h:panelGrid>
+        </h:form>
+    </ui:composition>
+</html>
